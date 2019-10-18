@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# The MIT License
+
+# Copyright (c) 2019 Dusty Mabe
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+set -eux
+
+# Define these functions in your library file
+build_kmods() {
+    echo "build_kmods is unimplemented for ${1}!" 2>&1
+    return 1
+}
+
+load_kmods() {
+    echo "load_kmods is unimplemented for ${1}!" 2>&1
+    return 1
+}
+
+unload_kmods() {
+    echo "unload_kmods is unimplemented for ${1}!" 2>&1
+    return 1
+}
+
+ACTION=$1
+NAME=$2
+KVER=$3 # kernel version
+
+# Source in the library that defines the {build,load,unload}_kmods
+# functions.
+source "/usr/local/lib/${NAME}-lib.sh"
+
+case "${ACTION}" in
+    build)
+      build_kmods $NAME $KVER
+    ;;
+    load)
+      load_kmods $NAME $KVER
+    ;;
+    unload)
+      unload_kmods $NAME $KVER
+    ;;
+    reload)
+      build_kmods $NAME $KVER
+      unload_kmods $NAME $KVER
+      load_kmods $NAME $KVER
+    ;;
+
+    *)
+      echo $"Unknown command. Exiting."
+      echo "Usage:"
+      echo ""
+      echo "build       Build kernel module(s) via container"
+      echo "load        Load kernel module(s)"
+      echo "unload      Unload kernel module(s)"
+      echo "reload      Build and reload kernel module(s)"
+      exit 1
+esac

@@ -1,0 +1,17 @@
+[Unit]
+Description=Kmods Via Containers
+After=NetworkManager-wait-online.service
+Wants=NetworkManager-wait-online.service
+
+[Service]
+Type=oneshot
+#EnvironmentFile=/etc/sysconfig/kmods-via-containers/%I
+TimeoutStartSec=25m
+RemainAfterExit=true
+ExecStartPre=/usr/bin/kmods-via-containers build %I %v 
+ExecStart=/usr/bin/kmods-via-containers load %I %v
+ExecReload=/usr/bin/kmods-via-containers reload %I %v
+ExecStop=/usr/bin/kmods-via-containers unload %I %v
+
+[Install]
+WantedBy=network.target
