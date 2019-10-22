@@ -46,7 +46,7 @@ KVER=$3 # kernel version
 
 # Source in the library that defines the {build,load,unload}_kmods
 # functions.
-source "/usr/local/lib/${NAME}-lib.sh"
+source "/usr/local/lib/kvc-${NAME}-lib.sh"
 
 case "${ACTION}" in
     build)
