@@ -26,17 +26,17 @@ set -eux
 
 # Define these functions in your library file
 build_kmods() {
-    echo "build_kmods is unimplemented for ${1}!" 2>&1
+    echo "build_kmods is unimplemented for ${NAME}!" 2>&1
     return 1
 }
 
 load_kmods() {
-    echo "load_kmods is unimplemented for ${1}!" 2>&1
+    echo "load_kmods is unimplemented for ${NAME}!" 2>&1
     return 1
 }
 
 unload_kmods() {
-    echo "unload_kmods is unimplemented for ${1}!" 2>&1
+    echo "unload_kmods is unimplemented for ${NAME}!" 2>&1
     return 1
 }
 
@@ -50,18 +50,18 @@ source "/usr/local/lib/${NAME}-lib.sh"
 
 case "${ACTION}" in
     build)
-      build_kmods $NAME $KVER
+      build_kmods $KVER
     ;;
     load)
-      load_kmods $NAME $KVER
+      load_kmods $KVER
     ;;
     unload)
-      unload_kmods $NAME $KVER
+      unload_kmods $KVER
     ;;
     reload)
-      build_kmods $NAME $KVER
-      unload_kmods $NAME $KVER
-      load_kmods $NAME $KVER
+      build_kmods $KVER
+      unload_kmods $KVER
+      load_kmods $KVER
     ;;
 
     *)
