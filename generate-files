@@ -1,0 +1,55 @@
+#!/bin/bash
+# The MIT License
+
+# Copyright (c) 2019 Dusty Mabe
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+set -eu
+
+main(){
+	read -p "Module Name: " MOD_NAME
+	read -p "Maintainer Email: " MAINTAINER
+	read -p "Registry and Image: " REGISTRY_IMAGE
+	read -p "kmod Version: " MOD_VERSION
+	read -p "kmod URL (with \${KMODVER}): " KMOD_URL
+	if [[ ! "${KMOD_URL}" == *"\${KMODVER}"* ]]; then
+		read -p "The URL does not specify a version. Are you sure you want to continue? (y/n)" CONT
+		if [[ "${CONT}" != "y" ]]; then
+			exit 1
+		fi
+	fi
+	read -p "GIT URL: " GIT_URL
+	read -p "Output Path: " OUTPUT_PATH
+
+	mkdir -p ${OUTPUT_PATH}
+	cp kvc-kmod-lib.sh.tpl ${OUTPUT_PATH}/kvc-${MOD_NAME}-kmod-lib.sh
+	sed -i "s|{{MOD_NAME}}|${MOD_NAME}|" ${OUTPUT_PATH}/kvc-${MOD_NAME}-kmod-lib.sh
+	sed -i "s|{{MOD_VERSION}}|${MOD_VERSION}|" ${OUTPUT_PATH}/kvc-${MOD_NAME}-kmod-lib.sh
+	sed -i "s|{{GIT_URL}}|${GIT_URL}|" ${OUTPUT_PATH}/kvc-${MOD_NAME}-kmod-lib.sh
+
+	cp Dockerfile.tpl ${OUTPUT_PATH}/Dockerfile
+	sed -i "s|{{REGISTRY_IMAGE}}|${REGISTRY_IMAGE}|" ${OUTPUT_PATH}/Dockerfile
+	sed -i "s|{{MAINTAINER}}|${MAINTAINER}|" ${OUTPUT_PATH}/Dockerfile
+	sed -i "s|{{KMOD_URL}}|${KMOD_URL}|" ${OUTPUT_PATH}/Dockerfile
+
+	echo "Move to ${OUTPUT_PATH} and edit kvc-${MOD_NAME}-kmod-lib.sh to fill in the template"
+}
+
+main
