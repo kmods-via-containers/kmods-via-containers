@@ -65,7 +65,7 @@ case "${ACTION}" in
     ;;
 
     *)
-      echo $"Unknown command. Exiting."
+      echo "Unknown command. Exiting."
       echo "Usage:"
       echo ""
       echo "build       Build kernel module(s) via container"
