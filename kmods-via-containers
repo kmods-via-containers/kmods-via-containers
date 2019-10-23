@@ -26,43 +26,51 @@ set -eu
 
 # Define these functions in your library file
 build_kmods() {
-    echo "build_kmods is unimplemented for ${NAME}!" 2>&1
+    echo "build_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
     return 1
 }
 
 load_kmods() {
-    echo "load_kmods is unimplemented for ${NAME}!" 2>&1
+    echo "load_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
     return 1
 }
 
 unload_kmods() {
-    echo "unload_kmods is unimplemented for ${NAME}!" 2>&1
+    echo "unload_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
     return 1
 }
 
-ACTION=$1
-NAME=$2
-KVER=$3 # kernel version
+KVC_ACTION=$1
+KVC_SOFTWARE_NAME=$2
+KVC_KVER=$3 # kernel version
+echo "KVC: ${KVC_ACTION} ${KVC_SOFTWARE_NAME} for ${KVC_KVER}"
 
 # Source in configuration for the KVC framework
 source "/etc/kmods-via-containers.conf"
 # Source in the library that defines {build,load,unload}_kmods
-source "/usr/local/lib/kvc-${NAME}-lib.sh"
+instance_library="/usr/local/lib/kvc-${KVC_SOFTWARE_NAME}-lib.sh"
+if [ -f "${instance_library}" ]; then
+    source "${instance_library}"
+else
+    echo "KVC requires an instance library at ${instance_library}" \
+         " to define significant functionality" 2>&1
+    exit 1
+fi
 
-case "${ACTION}" in
+case "${KVC_ACTION}" in
     build)
-      build_kmods $KVER
+      build_kmods $KVC_KVER
     ;;
     load)
-      load_kmods $KVER
+      load_kmods $KVC_KVER
     ;;
     unload)
-      unload_kmods $KVER
+      unload_kmods $KVC_KVER
     ;;
     reload)
-      build_kmods $KVER
-      unload_kmods $KVER
-      load_kmods $KVER
+      build_kmods $KVC_KVER
+      unload_kmods $KVC_KVER
+      load_kmods $KVC_KVER
     ;;
 
     *)
