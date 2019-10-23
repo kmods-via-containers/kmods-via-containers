@@ -1,18 +1,22 @@
 [Unit]
 Description=Kmods Via Containers - %i
 # Start after the network is up
+Wants=network-online.target
 After=network-online.target
 # Also after docker.service (no effect on systems without docker)
 After=docker.service
+# But before users are allowed to login
+Before=systemd-user-sessions.service
 
 [Service]
 Type=oneshot
-TimeoutStartSec=25m # It can take a long time to build
+TimeoutStartSec=25m
 RemainAfterExit=true
 ExecStartPre=/usr/bin/kmods-via-containers build %i %v 
 ExecStart=/usr/bin/kmods-via-containers load %i %v
 ExecReload=/usr/bin/kmods-via-containers reload %i %v
 ExecStop=/usr/bin/kmods-via-containers unload %i %v
+StandardOutput=journal+console
 
 [Install]
 WantedBy=default.target
