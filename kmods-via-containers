@@ -44,8 +44,8 @@ ACTION=$1
 NAME=$2
 KVER=$3 # kernel version
 
-# Source in the library that defines the {build,load,unload}_kmods
-# functions.
+# Source in configuration for the KVC framework
+source "/etc/kmods-via-containers.conf"
 # Source in the library that defines {build,load,unload}_kmods
 source "/usr/local/lib/kvc-${NAME}-lib.sh"
 
