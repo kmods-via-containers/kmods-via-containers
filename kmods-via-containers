@@ -57,27 +57,26 @@ fi
 
 case "${KVC_ACTION}" in
     build)
-      build_kmods
+        build_kmods
     ;;
     load)
-      load_kmods
+        load_kmods
     ;;
     unload)
-      unload_kmods
+        unload_kmods
     ;;
     reload)
-      build_kmods
-      unload_kmods
-      load_kmods
+        build_kmods
+        unload_kmods
+        load_kmods
     ;;
-
     *)
-      echo "Unknown command. Exiting."
-      echo "Usage:"
-      echo ""
-      echo "build       Build kernel module(s) via container"
-      echo "load        Load kernel module(s)"
-      echo "unload      Unload kernel module(s)"
-      echo "reload      Build and reload kernel module(s)"
-      exit 1
+        echo "Unknown command. Exiting."
+        echo "Usage:"
+        echo ""
+        echo "build       Build kernel module(s) via container"
+        echo "load        Load kernel module(s)"
+        echo "unload      Unload kernel module(s)"
+        echo "reload      Build and reload kernel module(s)"
+        exit 1
 esac
