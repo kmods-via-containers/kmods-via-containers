@@ -37,15 +37,19 @@ unload_kmods() {
     echo "unload_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
     return 1
 }
+wrapper() {
+    echo "wrapper is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
+    return 1
+}
 
-KVC_ACTION=$1
-KVC_SOFTWARE_NAME=$2
-KVC_KVER=$3 # kernel version
+KVC_ACTION=$1; shift
+KVC_SOFTWARE_NAME=$1; shift
+KVC_KVER=$1; shift
 echo "KVC: ${KVC_ACTION} ${KVC_SOFTWARE_NAME} for ${KVC_KVER}"
 
 # Source in configuration for the KVC framework
 source "/etc/kmods-via-containers.conf"
-# Source in the library that defines {build,load,unload}_kmods
+# Source in the library that defines {build,load,unload}_kmods,wrapper
 instance_library="/usr/local/lib/kvc-${KVC_SOFTWARE_NAME}-lib.sh"
 if [ -f "${instance_library}" ]; then
     source "${instance_library}"
@@ -70,6 +74,10 @@ case "${KVC_ACTION}" in
         unload_kmods
         load_kmods
     ;;
+    wrapper)
+        # wraps/runs executables from within the kernel module container
+        wrapper $@
+    ;;
     *)
         echo "Unknown command. Exiting."
         echo "Usage:"
@@ -78,5 +86,6 @@ case "${KVC_ACTION}" in
         echo "load        Load kernel module(s)"
         echo "unload      Unload kernel module(s)"
         echo "reload      Build and reload kernel module(s)"
+        echo "wrapper     Run userspace tools from within the container"
         exit 1
 esac
