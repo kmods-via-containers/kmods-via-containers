@@ -57,18 +57,18 @@ fi
 
 case "${KVC_ACTION}" in
     build)
-      build_kmods $KVC_KVER
+      build_kmods
     ;;
     load)
-      load_kmods $KVC_KVER
+      load_kmods
     ;;
     unload)
-      unload_kmods $KVC_KVER
+      unload_kmods
     ;;
     reload)
-      build_kmods $KVC_KVER
-      unload_kmods $KVC_KVER
-      load_kmods $KVC_KVER
+      build_kmods
+      unload_kmods
+      load_kmods
     ;;
 
     *)
