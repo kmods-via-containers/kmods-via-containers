@@ -29,12 +29,10 @@ build_kmods() {
     echo "build_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
     return 1
 }
-
 load_kmods() {
     echo "load_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
     return 1
 }
-
 unload_kmods() {
     echo "unload_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
     return 1
