@@ -1,7 +1,8 @@
 # kmods-via-containers or KVC
 
-Repo to that serves as a framework for building and delivering kernel
-modules via containers. Inspired by the work done by Joe Doss on 
+`kmods-via-containers` is a framework for building and delivering
+kernel modules via containers. This implementation for this framework
+was inspired by the work done by Joe Doss on 
 [atomic-wireguard](https://github.com/jdoss/atomic-wireguard.git).
 
 This framework relies on 3 independently developed pieces.
