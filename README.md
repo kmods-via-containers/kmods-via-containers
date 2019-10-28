@@ -6,7 +6,7 @@ modules via containers. Inspired by the work done by Joe Doss on
 
 This framework relies on 3 independently developed pieces.
 
-1. The kmods-via-containers code/config (this repo)
+1. The `kmods-via-containers` code/config (this repo)
 
 Delivers the stencil code and configuration files for building and
 delivering kmods via containers. It also delivers a service
@@ -138,10 +138,6 @@ After building we can load and unload:
 
 ```
 sudo kmods-via-containers load simple-kmod $(uname -r)
-lsmod | grep simple.*kmod
-simple_procfs_kmod     16384  0
-simple_kmod            16384  0
-
 sudo kmods-via-containers unload simple-kmod $(uname -r)
 lsmod | grep simple.*kmod
 simple_procfs_kmod     16384  0
@@ -153,4 +149,33 @@ Which is roughly equivalent to start and stop:
 ```
 sudo systemctl start kmods-via-containers@simple-kmod.service
 sudo systemctl stop kmods-via-containers@simple-kmod.service
+```
+
+Once the modules are loaded we can view that they are loaded by
+looking at lsmod, dmesg and also interacting with the procfs file:
+
+```
+$ lsmod | grep simple.*kmod
+simple_procfs_kmod     16384  0
+simple_kmod            16384  0
+
+$ dmesg | grep 'Hello world'
+[ 6420.761332] Hello world from simple_kmod.
+
+$ sudo cat /proc/simple-procfs-kmod 
+simple-procfs-kmod number = 0
+```
+
+We can also use the `spkut` userspace utility to interact
+with the `simple-procfs-kmod`:
+
+```
+$ sudo spkut 44
+KVC: wrapper simple-kmod for 5.3.7-301.fc31.x86_64
+Running userspace wrapper using the kernel module container...
++ podman run -i --rm --privileged
+simple-kmod-dd1a7d4:5.3.7-301.fc31.x86_64 spkut 44
+simple-procfs-kmod number = 0
+
+simple-procfs-kmod number = 44
 ```
