@@ -173,8 +173,7 @@ with the `simple-procfs-kmod`:
 $ sudo spkut 44
 KVC: wrapper simple-kmod for 5.3.7-301.fc31.x86_64
 Running userspace wrapper using the kernel module container...
-+ podman run -i --rm --privileged
-simple-kmod-dd1a7d4:5.3.7-301.fc31.x86_64 spkut 44
++ podman run -i --rm --privileged simple-kmod-dd1a7d4:5.3.7-301.fc31.x86_64 spkut 44
 simple-procfs-kmod number = 0
 
 simple-procfs-kmod number = 44
