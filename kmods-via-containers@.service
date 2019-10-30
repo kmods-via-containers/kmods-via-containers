@@ -12,10 +12,10 @@ Before=systemd-user-sessions.service
 Type=oneshot
 TimeoutStartSec=25m
 RemainAfterExit=true
-ExecStartPre=/usr/bin/kmods-via-containers build %i %v 
-ExecStart=/usr/bin/kmods-via-containers load %i %v
-ExecReload=/usr/bin/kmods-via-containers reload %i %v
-ExecStop=/usr/bin/kmods-via-containers unload %i %v
+ExecStartPre=kmods-via-containers build %i %v
+ExecStart=kmods-via-containers load %i %v
+ExecReload=kmods-via-containers reload %i %v
+ExecStop=kmods-via-containers unload %i %v
 StandardOutput=journal+console
 
 [Install]
