@@ -56,7 +56,7 @@ example is worth a thousand words. In this example I will use
 3. [kvc-simple-kmod](https://github.com/dustymabe/kvc-simple-kmod)
     - An instance of a KVC framework repo that shows how
       to build and deliver the modules from the `simple-kmod`
-      repo
+      source code repository
 
 So we'll build the modules (`simple-kmod` and `simple-procfs-kmod`)
 and the userspace tool (`spkut`) inside of a container by using the 
