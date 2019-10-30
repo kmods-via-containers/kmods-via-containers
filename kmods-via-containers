@@ -48,7 +48,7 @@ KVC_KVER=$1; shift
 echo "KVC: ${KVC_ACTION} ${KVC_SOFTWARE_NAME} for ${KVC_KVER}"
 
 # Source in configuration for the KVC framework
-source "/etc/kmods-via-containers.conf"
+source "/etc/kvc/kmods-via-containers.conf"
 # Source in the library that defines {build,load,unload}_kmods,wrapper
 instance_library="/usr/local/lib/kvc-${KVC_SOFTWARE_NAME}-lib.sh"
 if [ -f "${instance_library}" ]; then
