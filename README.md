@@ -74,7 +74,7 @@ For `kvc-simple-kmod` the config file build content defaults to
 defaults to [`Dockerfile.fedora`](https://github.com/dustymabe/kvc-simple-kmod/blob/master/Dockerfile.fedora).
 
 There are a few other values defined in
-[the config file](https://github.com/dustymabe/kvc-simple-kmod/blob/master/host/etc/kvc-simple-kmod.conf)
+[the config file](https://github.com/dustymabe/kvc-simple-kmod/blob/master/simple-kmod.conf)
 of the `kvc-simple-kmod` example. Here are all of them:
 
 - `KMOD_CONTAINER_BUILD_CONTEXT="git://github.com/dustymabe/kvc-simple-kmod.git"`
@@ -98,7 +98,7 @@ This will place the executable config file and service on your system.
 ```
 git clone https://github.com/dustymabe/kmods-via-containers
 cd kmods-via-containers
-make install
+sudo make install
 ```
 
 Now reload systemd to read the systemd unit we just installed:
@@ -115,7 +115,7 @@ onto the system.
 ```
 git clone https://github.com/dustymabe/kvc-simple-kmod
 cd kvc-simple-kmod
-make install
+sudo make install
 ```
 
 Now instantiate an instance of `kmods-via-containers@.service` for
