@@ -90,7 +90,7 @@ The `KMOD_NAMES` define the list of kernel modules that the user would
 like to be loaded/unloaded when the library is called.
 
 
-## Testing it out
+## Testing it out on a booted Classic Host
 
 Install the kmods-via-containers files on your system by running `make install`.
 This will place the executable config file and service on your system.
@@ -175,6 +175,98 @@ $ sudo spkut 44
 KVC: wrapper simple-kmod for 5.3.7-301.fc31.x86_64
 Running userspace wrapper using the kernel module container...
 + podman run -i --rm --privileged simple-kmod-dd1a7d4:5.3.7-301.fc31.x86_64 spkut 44
+simple-procfs-kmod number = 0
+
+simple-procfs-kmod number = 44
+```
+
+## Testing it out on an OSTree based host provisioned via Ignition
+
+First create a base ignition config that you'd like to use. It will
+contain the ssh pub key to add to the authorized keys file for the
+`core` user and also a systemd unit (`require-simple-kmod.service` that 
+**requires** `kmods-via-containers@simple-kmod.service`.
+The systemd unit is a workaround for a an
+[upstream bug](https://github.com/coreos/ignition/issues/586) 
+and makes sure the `kmods-via-containers@simple-kmod.service` gets
+started on boot.
+
+```
+cat <<EOF > ./baseconfig.ign
+{
+  "ignition": { "version": "3.0.0" },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "groups": ["sudo"],
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAA"
+        ]
+      }
+    ]
+  },
+  "systemd": {
+    "units": [{
+      "name": "require-simple-kmod.service",
+      "enabled": true,
+      "contents": "[Unit]\nRequires=kmods-via-containers@simple-kmod.service\n[Service]\nType=oneshot\nExecStart=/usr/bin/true\n\n[Install]\nWantedBy=multi-user.target"
+    }]
+  }
+}
+EOF
+```
+
+**NOTE** You'll need to add your public SSH key to that `baseconfig.ign`.
+
+Next we'll create a fakeroot directory and populate it with files that
+we want to deliver via Ignition:
+
+```
+FAKEROOT=$(mktemp -d)
+git clone https://github.com/dustymabe/kmods-via-containers
+cd kmods-via-containers
+make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
+cd ..
+git clone https://github.com/dustymabe/kvc-simple-kmod
+cd kvc-simple-kmod
+make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
+cd ..
+```
+
+Now we'll use a tool call the
+[filetranspiler](https://github.com/ashcrow/filetranspiler)
+to generate a final ignition config given the base ignition
+config and the fakeroot directory with files we'd like to
+deliver:
+
+
+```
+git clone https://github.com/ashcrow/filetranspiler
+./filetranspiler/filetranspile -i ./baseconfig.ign -f ${FAKEROOT} -p -o config.ign
+```
+
+Now we can use this ignition config to start a Fedora CoreOS or RHEL
+CoreOS node and see the `kmods-via-containers@simple-kmod.service` and
+the kernel modules associated with `simple-kmods` get loaded.
+
+You can check the modules are loaded with:
+
+```
+$ lsmod | grep simple
+simple_procfs_kmod     16384  0
+simple_kmod            16384  0
+```
+
+And run a userspace utility:
+
+**NOTE**: `sudo -i` is necessary because otherwise /usr/local/bin won't be in the $PATH.
+
+```
+$ sudo -i /usr/local/bin/spkut 44
+KVC: wrapper simple-kmod for 5.3.11-300.fc31.x86_64
+Running userspace wrapper using the kernel module container...
++ podman run -i --rm --privileged simple-kmod-dd1a7d4:5.3.11-300.fc31.x86_64 spkut 44
 simple-procfs-kmod number = 0
 
 simple-procfs-kmod number = 44
