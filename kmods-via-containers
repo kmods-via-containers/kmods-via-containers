@@ -24,6 +24,14 @@
 
 set -eu
 
+# Helper functions for running containers
+# Use set -x to print out the runtime CLI to log
+# Run in a subshell so we don't also see `set +x`
+kvc_c_run()   { (set -x; $KVC_CONTAINER_RUNTIME run -i --rm $@ ); }
+kvc_c_build() { (set -x; $KVC_CONTAINER_RUNTIME build  $@ ); }
+kvc_c_images(){ (set -x; $KVC_CONTAINER_RUNTIME images $@ ); }
+kvc_c_rmi()   { (set -x; $KVC_CONTAINER_RUNTIME rmi    $@ ); }
+
 # Define these functions in your library file
 build_kmods() {
     echo "build_kmods is unimplemented for ${KVC_SOFTWARE_NAME}!" 2>&1
