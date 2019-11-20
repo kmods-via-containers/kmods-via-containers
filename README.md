@@ -208,7 +208,7 @@ cat <<EOF > ./baseconfig.ign
   },
   "systemd": {
     "units": [{
-      "name": "require-simple-kmod.service",
+      "name": "require-kvc-simple-kmod.service",
       "enabled": true,
       "contents": "[Unit]\nRequires=kmods-via-containers@simple-kmod.service\n[Service]\nType=oneshot\nExecStart=/usr/bin/true\n\n[Install]\nWantedBy=multi-user.target"
     }]
@@ -271,3 +271,64 @@ simple-procfs-kmod number = 0
 
 simple-procfs-kmod number = 44
 ```
+
+# Steps for OpenShift (RHCOS) via the [MCO](https://github.com/openshift/machine-config-operator) 
+
+Start with a base MCO yaml snippet that looks like:
+
+```
+cat <<EOF > mc-base.yaml
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 10-kvc-simple-kmod
+spec:
+  config:
+EOF
+```
+
+Start with a base ignition config snippet that looks like the
+following. Note that we don't need an SSH key here like we did before
+because our openshift install already has configs for the SSH key
+defined.
+
+```
+cat <<EOF > ./baseconfig.ign
+{
+  "ignition": { "version": "2.2.0" },
+  "systemd": {
+    "units": [{
+      "name": "require-kvc-simple-kmod.service",
+      "enabled": true,
+      "contents": "[Unit]\nRequires=kmods-via-containers@simple-kmod.service\n[Service]\nType=oneshot\nExecStart=/usr/bin/true\n\n[Install]\nWantedBy=multi-user.target"
+    }]
+  }
+}
+EOF
+```
+
+Follow the steps from the previous section on setting up the fakeroot and populating the files.
+For the filetranspiler step we'll add two new arguments:
+
+- `--format=yaml` to output yaml for the machineconfig
+- `--dereference-symlinks` to workaround [missing symlink support in the MCO](https://github.com/openshift/machine-config-operator/issues/125)
+
+We'll also pipe that output into a `sed` command to indent the text by
+the appropriate amount so that we can append it to the `mc-base.yaml`.
+The appended file will be written to `mc.yaml`
+
+```
+./filetranspiler/filetranspile -i ./baseconfig.ign -f ${FAKEROOT} --format=yaml --dereference-symlinks | sed 's/^/     /' | (cat mc-base.yaml -) > mc.yaml
+```
+
+Now we can create a new machine config for the cluster:
+
+```
+oc create -f mc.yaml
+```
+
+After a period of time your nodes should have started the
+`kmods-via-containers@simple-kmod.service` service and the kernel
+modules should be loaded.
