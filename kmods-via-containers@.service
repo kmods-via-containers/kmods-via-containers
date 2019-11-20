@@ -5,6 +5,8 @@ Wants=network-online.target
 After=network-online.target
 # Also after docker.service (no effect on systems without docker)
 After=docker.service
+# Before kubelet.service (no effect on systems without kubernetes)
+Before=kubelet.service
 # But before users are allowed to login
 Before=systemd-user-sessions.service
 
