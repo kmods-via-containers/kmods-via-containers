@@ -47,13 +47,13 @@ It must define a few functions in the bash library:
 To give a full illustration of how to use this framework, a full
 example is worth a thousand words. In this example I will use
 
-1. The [kmods-via-containers](https://github.com/dustymabe/kmods-via-containers) software (this repo)
-2. [simple-kmod](https://github.com/dustymabe/simple-kmod)
+1. The [kmods-via-containers](https://github.com/kmods-via-containers/kmods-via-containers) software (this repo)
+2. [simple-kmod](https://github.com/kmods-via-containers/simple-kmod)
     - A simple kmod source code repo
     - Contains the source code for two modules (`simple-kmod` and `simple-procfs-kmod`)
     - Contains the source code for one userspace tool (`spkut`)
         - Compiled from `simple-procfs-kmod-userspace-tool.c`
-3. [kvc-simple-kmod](https://github.com/dustymabe/kvc-simple-kmod)
+3. [kvc-simple-kmod](https://github.com/kmods-via-containers/kvc-simple-kmod)
     - An instance of a KVC framework repo that shows how
       to build and deliver the modules from the `simple-kmod`
       source code repository
@@ -70,14 +70,14 @@ and the container build file specified by `KMOD_CONTAINER_BUILD_FILE`.
 Both of these vars are defined in the `kvc-simple-kmod.conf` file. 
 
 For `kvc-simple-kmod` the config file build content defaults to 
-`git://github.com/dustymabe/kvc-simple-kmod.git` and the build file
-defaults to [`Dockerfile.fedora`](https://github.com/dustymabe/kvc-simple-kmod/blob/master/Dockerfile.fedora).
+`git://github.com/kmods-via-containers/kvc-simple-kmod.git` and the build file
+defaults to [`Dockerfile.fedora`](https://github.com/kmods-via-containers/kvc-simple-kmod/blob/master/Dockerfile.fedora).
 
 There are a few other values defined in
-[the config file](https://github.com/dustymabe/kvc-simple-kmod/blob/master/simple-kmod.conf)
+[the config file](https://github.com/kmods-via-containers/kvc-simple-kmod/blob/master/simple-kmod.conf)
 of the `kvc-simple-kmod` example. Here are all of them:
 
-- `KMOD_CONTAINER_BUILD_CONTEXT="git://github.com/dustymabe/kvc-simple-kmod.git"`
+- `KMOD_CONTAINER_BUILD_CONTEXT="git://github.com/kmods-via-containers/kvc-simple-kmod.git"`
 - `KMOD_CONTAINER_BUILD_FILE=Dockerfile.fedora`
 - `KMOD_SOFTWARE_VERSION=dd1a7d4`
 - `KMOD_NAMES="simple-kmod simple-procfs-kmod"`
@@ -96,7 +96,7 @@ Install the kmods-via-containers files on your system by running `make install`.
 This will place the executable config file and service on your system.
 
 ```
-git clone https://github.com/dustymabe/kmods-via-containers
+git clone https://github.com/kmods-via-containers/kmods-via-containers
 cd kmods-via-containers
 sudo make install
 ```
@@ -113,7 +113,7 @@ instance library and config file as well as the userspace wrapper
 onto the system.
 
 ```
-git clone https://github.com/dustymabe/kvc-simple-kmod
+git clone https://github.com/kmods-via-containers/kvc-simple-kmod
 cd kvc-simple-kmod
 sudo make install
 ```
@@ -224,11 +224,11 @@ we want to deliver via Ignition:
 
 ```
 FAKEROOT=$(mktemp -d)
-git clone https://github.com/dustymabe/kmods-via-containers
+git clone https://github.com/kmods-via-containers/kmods-via-containers
 cd kmods-via-containers
 make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
 cd ..
-git clone https://github.com/dustymabe/kvc-simple-kmod
+git clone https://github.com/kmods-via-containers/kvc-simple-kmod
 cd kvc-simple-kmod
 make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
 cd ..
@@ -314,11 +314,11 @@ we want to deliver via Ignition:
 
 ```
 FAKEROOT=$(mktemp -d)
-git clone https://github.com/dustymabe/kmods-via-containers
+git clone https://github.com/kmods-via-containers/kmods-via-containers
 cd kmods-via-containers
 make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
 cd ..
-git clone https://github.com/dustymabe/kvc-simple-kmod
+git clone https://github.com/kmods-via-containers/kvc-simple-kmod
 cd kvc-simple-kmod
 make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
 cd ..
