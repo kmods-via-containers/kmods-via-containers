@@ -309,8 +309,49 @@ cat <<EOF > ./baseconfig.ign
 EOF
 ```
 
-Follow the steps from the previous section on setting up the fakeroot and populating the files.
-For the filetranspiler step we'll add two new arguments:
+Next we'll create a fakeroot directory and populate it with files that
+we want to deliver via Ignition:
+
+```
+FAKEROOT=$(mktemp -d)
+git clone https://github.com/dustymabe/kmods-via-containers
+cd kmods-via-containers
+make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
+cd ..
+git clone https://github.com/dustymabe/kvc-simple-kmod
+cd kvc-simple-kmod
+make install DESTDIR=${FAKEROOT}/usr/local CONFDIR=${FAKEROOT}/etc/
+cd ..
+```
+
+For RHCOS we'll need to switch the container build file to `Dockerfile.rhel`:
+
+```
+sed -i s/KMOD_CONTAINER_BUILD_FILE=Dockerfile.fedora/KMOD_CONTAINER_BUILD_FILE=Dockerfile.rhel/ $FAKEROOT/etc/kvc/simple-kmod.conf
+```
+
+And we'll also need to get entitlements onto our system so we can
+install protected content for the kernel module build. We can do this
+by pulling the entitlements from a RHEL 8 system. On a RHEL 8 system that
+[has already been attached to subscription/entitlement](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html-single/rhsm/index#reg-cli)
+you can package up the necessary data like:
+
+```
+[rhel8.host] # tar -czf subs.tar.gz /etc/pki/entitlement/ /etc/rhsm/ /etc/yum.repos.d/redhat.repo
+```
+
+Then copy `subs.tar.gz` from the RHEL 8 system and extract them into the fakeroot:
+
+```
+tar -x -C ${FAKEROOT} -f subs.tar.gz
+```
+
+Now we'll use a tool call the
+[filetranspiler](https://github.com/ashcrow/filetranspiler)
+to generate a final ignition config given the base ignition
+config and the fakeroot directory with files we'd like to
+deliver. For this call to the filetranspiler we'll add two
+new arguments:
 
 - `--format=yaml` to output yaml for the machineconfig
 - `--dereference-symlinks` to workaround [missing symlink support in the MCO](https://github.com/openshift/machine-config-operator/issues/125)
@@ -320,6 +361,7 @@ the appropriate amount so that we can append it to the `mc-base.yaml`.
 The appended file will be written to `mc.yaml`
 
 ```
+git clone https://github.com/ashcrow/filetranspiler
 ./filetranspiler/filetranspile -i ./baseconfig.ign -f ${FAKEROOT} --format=yaml --dereference-symlinks | sed 's/^/     /' | (cat mc-base.yaml -) > mc.yaml
 ```
 
