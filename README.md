@@ -1,5 +1,9 @@
 # kmods-via-containers or KVC
 
+## NOTE: this fork is meant to be used with:
+- ProjectCalico/Tigera's Openshift/RHCOS [Wireguard directions](https://docs.projectcalico.org/security/encrypt-cluster-pod-traffic)
+- Tigera's KVC Wireguard [kmod](https://github.com/tigera/kvc-wireguard-kmod) 
+
 `kmods-via-containers` is a framework for building and delivering
 kernel modules via containers. This implementation for this framework
 was inspired by the work done by Joe Doss on 

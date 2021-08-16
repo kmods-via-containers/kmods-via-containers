@@ -58,8 +58,8 @@ echo "KVC: ${KVC_ACTION} ${KVC_SOFTWARE_NAME} for ${KVC_KVER}"
 # Source in configuration for the KVC framework
 source "/etc/kvc/kmods-via-containers.conf"
 # Source in the library that defines {build,load,unload}_kmods,wrapper
-# must be in one of /usr/{,local/}lib/kvc/${KVC_SOFTWARE_NAME}-lib.sh
-for instance_library in /usr/{local/,}lib/kvc/${KVC_SOFTWARE_NAME}-lib.sh; do
+# must be in one of /etc/kvc/lib/kvc/${KVC_SOFTWARE_NAME}-lib.sh
+for instance_library in /etc/kvc/lib/kvc/${KVC_SOFTWARE_NAME}-lib.sh; do
     if [ -f "${instance_library}" ]; then
         source "${instance_library}"
         found=1
@@ -69,7 +69,7 @@ if [ "${found-}" != 1 ]; then
     echo "KVC requires an instance library" \
          "to define significant functionality" 2>&1
     echo "No instance library found in one of required locations" \
-         /usr/{local/,}lib/kvc/${KVC_SOFTWARE_NAME}-lib.sh 2>&1
+         /etc/kvc/lib/kvc/${KVC_SOFTWARE_NAME}-lib.sh 2>&1
     exit 1
 fi
 

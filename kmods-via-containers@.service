@@ -15,10 +15,10 @@ Type=oneshot
 TimeoutStartSec=25m
 RemainAfterExit=true
 # Use bash to workaround https://github.com/coreos/rpm-ostree/issues/1936
-ExecStartPre=/usr/bin/bash -c "kmods-via-containers build %i %v"
-ExecStart=/usr/bin/bash -c "kmods-via-containers load %i %v"
-ExecReload=/usr/bin/bash -c "kmods-via-containers reload %i %v"
-ExecStop=/usr/bin/bash -c "kmods-via-containers unload %i %v"
+ExecStartPre=/usr/bin/bash -c "/etc/kvc/bin/kmods-via-containers build %i %v"
+ExecStart=/usr/bin/bash -c "/etc/kvc/bin/kmods-via-containers load %i %v"
+ExecReload=/usr/bin/bash -c "/etc/kvc/bin/kmods-via-containers reload %i %v"
+ExecStop=/usr/bin/bash -c "/etc/kvc/bin/kmods-via-containers unload %i %v"
 StandardOutput=journal+console
 
 [Install]
